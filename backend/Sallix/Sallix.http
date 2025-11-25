@@ -1,0 +1,6 @@
+@Sallix_HostAddress = http://localhost:5250
+
+GET {{Sallix_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
