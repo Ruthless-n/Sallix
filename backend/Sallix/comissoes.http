@@ -1,0 +1,10 @@
+### Teste das APIs de Comissão
+
+### Obter comissões por venda
+GET http://localhost:5000/api/comissao/por-venda
+
+### Obter resumo de comissões por vendedor
+GET http://localhost:5000/api/comissao/resumo
+
+### Obter todas as vendas
+GET http://localhost:5000/api/comissao/vendas
