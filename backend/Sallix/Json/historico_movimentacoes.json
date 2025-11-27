@@ -1,0 +1,13 @@
+[
+  {
+    "Id": 1,
+    "CodigoProduto": 101,
+    "DescricaoProduto": "Caneta Azul",
+    "TipoMovimentacao": "Entrada",
+    "Descricao": "aa",
+    "Quantidade": 12,
+    "DataMovimentacao": "2025-11-27T14:16:41.8097367-03:00",
+    "EstoqueAnterior": 150,
+    "EstoqueAtual": 162
+  }
+]

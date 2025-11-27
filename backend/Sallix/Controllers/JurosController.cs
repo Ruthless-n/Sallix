@@ -15,15 +15,14 @@ namespace Sallix.Controllers
         }
 
         [HttpPost("calcular-juros")]
-        public IActionResult CalcularJuros([FromQuery] decimal valorInicial, [FromQuery] DateTime dataVencimento)
+        public IActionResult CalcularJuros([FromBody] RequestJuros request)
         {
-            if (valorInicial <= 0 || dataVencimento == default)
-            {
+            if (request.Valor <= 0 || request.DataVencimento == default)
                 return BadRequest("Dados inválidos.");
-            }
 
-            var resultado = _jurosService.CalcularValorJuros(valorInicial, dataVencimento);
+            var resultado = _jurosService.CalcularValorJuros(request.Valor, request.DataVencimento);
             return Ok(resultado);
         }
+
     }
 }

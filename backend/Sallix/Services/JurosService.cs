@@ -1,22 +1,28 @@
-﻿namespace Sallix.Services
+﻿using System;
+using System.Drawing;
+using Sallix.Models;
+
+namespace Sallix.Services
 {
     public class JurosService
     {
-        public decimal CalcularValorJuros(decimal valorInicial, DateTime dataVencimento)
+        public Juros CalcularValorJuros(decimal valorInicial, DateTime dataVencimento)
         {
-            DateTime dataHoje = DateTime.Now;
-
-            if (dataHoje <= dataVencimento)
-            {
-                return valorInicial;
-            }
-
+            DateTime dataHoje = DateTime.Today;
             int diasAtraso = (dataHoje - dataVencimento).Days;
-            decimal taxaJurosDiaria = 0.025m;
-            decimal jurosPercentTotal = diasAtraso * taxaJurosDiaria;
-            decimal valorComJuros = valorInicial + (valorInicial * jurosPercentTotal);
 
-            return Math.Round(valorComJuros, 2);
+            decimal jurosAoDia = 0.025m;
+            decimal valorJuros = valorInicial * jurosAoDia * diasAtraso; 
+            decimal total = valorInicial + valorJuros;
+
+            return new Juros
+            {
+                ValorInicial = valorInicial, 
+                DataVencimento = dataVencimento, 
+                DiasAtraso = diasAtraso,
+                ValorJuros = valorJuros,
+                TotalPagar = total
+            };
         }
     }
 }

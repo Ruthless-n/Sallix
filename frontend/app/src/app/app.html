@@ -1,0 +1,224 @@
+<div class="container">
+  <header class="header">
+    <h1>💼 SALLIX - Gestão Comercial</h1>
+
+    <nav class="tabs">
+      <button 
+        class="tab"
+        [class.active]="activeTab === 'comissoes'"
+        (click)="activeTab = 'comissoes'">
+        Comissões
+      </button>
+
+      <button 
+        class="tab"
+        [class.active]="activeTab === 'estoque'"
+        (click)="activeTab = 'estoque'">
+        Estoque
+      </button>
+
+      <button 
+        class="tab"
+        [class.active]="activeTab === 'juros'"
+        (click)="activeTab = 'juros'">
+        Juros
+      </button>
+    </nav>
+  </header>
+
+  <main class="main-content">
+
+    <!-- ============================ -->
+    <!-- TAB: COMISSÕES -->
+    <!-- ============================ -->
+    @if (activeTab === 'comissoes') {
+    <section class="tab-content">
+      <h2>Cálculo de Comissões de Vendas</h2>
+             
+
+      <div class="table-container">
+        <h3>Detalhamento por Venda</h3>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Vendedor</th>
+              <th>Valor da Venda</th>
+              <th>Quantidade de Vendas</th>
+              <th>Comissão</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (item of vendas | slice: 0: 20; track item.vendedor + item.valor) {
+            <tr>
+              <td>{{ item.vendedor }}</td>
+              <td class="value">R$ {{ item.totalVendas | number:'1.2-2' }}</td>
+              <td class="aliquota">{{ item.quantidadeVendas }}</td>
+              <td class="value">
+                R$ {{ item.totalComissao | number:'1.2-2' }}
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+    }
+
+    <!-- ============================ -->
+    <!-- TAB: ESTOQUE -->
+    <!-- ============================ -->
+    @if (activeTab === 'estoque') {
+    <section class="tab-content">
+      <h2>Gestão de Estoque</h2>
+
+      <div class="form-section">
+        <h3>Nova Movimentação</h3>
+
+        <form (ngSubmit)="adicionarMovimentacao()" class="form-grid">
+          <div class="form-group">
+            <label>Produto</label>
+            <select [(ngModel)]="novaMovimentacao.codigoProduto" name="codigoProduto" required>
+              <option value="">Selecione um produto</option>
+              @for (produto of estoque; track produto.codigoProduto) {
+              <option [value]="produto.codigoProduto">{{ produto.descricaoProduto }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Tipo</label>
+            <select [(ngModel)]="novaMovimentacao.tipo" name="tipo" required>
+              <option value="">Selecione</option>
+              <option value="entrada">Entrada</option>
+              <option value="saida">Saída</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Quantidade</label>
+            <input type="number" name="quantidade" min="1" [(ngModel)]="novaMovimentacao.quantidade" required>
+          </div>
+
+          <div class="form-group">
+            <label>Descrição</label>
+            <input type="text" name="descricao" [(ngModel)]="novaMovimentacao.descricao"
+              placeholder="ex: Compra fornecedor" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Registrar Movimentação</button>
+        </form>
+      </div>
+
+      <div class="stats-grid">
+        @for (produto of estoque; track produto.codigoProduto) {
+        <div class="stat-card">
+          <h3>{{ produto.descricaoProduto }}</h3>
+          <div class="stat-value">{{ produto.estoqueAtual }}</div>
+          <div class="stat-detail">Código: {{ produto.codigoProduto }}</div>
+        </div>
+        }
+      </div>
+
+      <div class="table-container">
+        <h3>Histórico de Movimentações</h3>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Produto</th>
+              <th>Tipo</th>
+              <th>Quantidade</th>
+              <th>Descrição</th>
+              <th>Estoque Final</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (mov of movimentacoes | slice: 0: 20; track mov.id) {
+            <tr [class.entrada]="mov.tipo === 'entrada'" [class.saida]="mov.tipo === 'saida'">
+              <td>{{ mov.id }}</td>
+              <td>{{ mov.descricaoProduto }}</td>
+              <td class="tipo">
+                <span [class]="'badge-' + mov.tipo">{{ mov.tipoMovimentacao }}</span>
+              </td>
+              <td class="qty">{{ mov.quantidade }}</td>
+              <td>{{ mov.descricao }}</td>
+              <td class="value">{{ mov.estoqueAtual }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+    }
+
+    <!-- ============================ -->
+    <!-- TAB: JUROS -->
+    <!-- ============================ -->
+    @if (activeTab === 'juros') {
+    <section class="tab-content">
+      <h2>Cálculo de Juros por Atraso</h2>
+
+      <div class="form-section">
+        <h3>Simular Cálculo de Juros</h3>
+
+        <form (ngSubmit)="calcularJuros()" class="form-grid">
+          <div class="form-group">
+            <label>Valor Original (R$)</label>
+            <input type="number" step="0.01" name="valor" [(ngModel)]="simulacaoJuros.valor" placeholder="1000.00"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label>Data de Vencimento</label>
+            <input type="date" name="dataVencimento" [(ngModel)]="simulacaoJuros.dataVencimento" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Calcular Juros</button>
+        </form>
+      </div>
+
+      @if (resultadoJuros) {
+      <div class="result-card">
+        <h3>Resultado do Cálculo</h3>
+
+        <div class="result-grid">
+          <div class="result-item">
+            <label>Valor Original</label>
+            <span class="result-value">R$ {{ resultadoJuros.valorInicial | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="result-item">
+            <label>Data de Vencimento</label>
+            <span class="result-value">{{ resultadoJuros.dataVencimento | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="result-item">
+            <label>Dias em Atraso</label>
+            <span class="result-value">{{ resultadoJuros.diasAtraso }}</span>
+          </div>
+
+          <div class="result-item">
+            <label>Alíquota (2.5% ao dia)</label>
+            <span class="result-value">{{ resultadoJuros.diasAtraso * 2.5 }}%</span>
+          </div>
+
+          <div class="result-item">
+            <label>Valor de Juros</label>
+            <span class="result-value juros">R$ {{ resultadoJuros.valorJuros | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="result-item">
+            <label>Total a Pagar</label>
+            <span class="result-value total">R$ {{ resultadoJuros.totalPagar | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+      }
+    </section>
+    }
+  </main>
+</div>
